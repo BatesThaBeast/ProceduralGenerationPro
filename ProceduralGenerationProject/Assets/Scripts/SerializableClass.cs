@@ -5,11 +5,15 @@ using UnityEngine;
 [System.Serializable]
 public class Rooms
 {
-    public List<GameObject> someRooms;//Thiss will hold all of our rooms
+    public List<GameObject> someRooms;//This will hold all of our rooms
 }
 [System.Serializable]
 public class RoomList
 {
-    public List<Rooms> allRooms;//Thiss will hold all of our rooms
+    public List<Rooms> allRooms;//This will hold all of our rooms
 }
-
+[System.Serializable]
+public class RoomLocations
+{
+    public List<Vector3> roomLocations;
+}
