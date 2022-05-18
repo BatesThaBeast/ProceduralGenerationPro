@@ -15,5 +15,9 @@ public abstract class SCR_AbstractDungeonGenerator : MonoBehaviour
         tilemapVisualizer.Clear();
         RunProceduralGeneration();
     }
+    public void ClearDungeon()
+    {
+        tilemapVisualizer.Clear();
+    }
     protected abstract void RunProceduralGeneration();
 }

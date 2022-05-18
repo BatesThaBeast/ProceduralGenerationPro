@@ -19,5 +19,9 @@ public class SCR_RandomDungeonGeneratorEditor : Editor
         {
             generator.GenerateDungeon();
         }
+        if (GUILayout.Button("Erase Dungeon"))
+        {
+            generator.ClearDungeon();
+        }
     }
 }
