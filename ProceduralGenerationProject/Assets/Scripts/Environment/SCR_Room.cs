@@ -11,14 +11,18 @@ public class SCR_Room : MonoBehaviour
     [SerializeField] public bool hasRight;
     [SerializeField] public int possibleSpawns;
 
+    private void Start()
+    {
+        Debug.Log(this.tag);
+    }
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if(collision.CompareTag("SpawnPoint"))
+        if(collision.tag == "SpawnPoint")
         {
             Debug.Log("Destroying SpawnPoint");
             Destroy(collision);
         }
-        if (collision.CompareTag("Room"))
+        if (collision.tag == "Room")
         {
             Debug.Log("Destroying Room");
             Destroy(this);

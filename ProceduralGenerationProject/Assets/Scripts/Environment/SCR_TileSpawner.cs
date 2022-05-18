@@ -35,17 +35,12 @@ public class SCR_TileSpawner : MonoBehaviour
         alreadySpawned.Add(startRoom.transform.position);
         StartSpawning();
     }
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
     /*
     Author - Johnathan Bates
     FUNCTION NAME:StartSpawning()
     FUNCTION TYPE:Mutator
     FUNCTION VARIABLES: GameObject spawnedRoom, public RoomList roomContainer, private List<Vector3> alreadySpawned
-    FUNCTION CALLS: private void SpawnTiles(GameObject lastSpawned, int possibleSpawns)
+    FUNCTION CALLS: private void StartSpawningTiles(int sideRooms, Vector3 offset)
     FUNCTION DESCRIPTION: StartSpawning() will be used at the start of the scene to create the center room, as well as the neighboring rooms above, below, to the left and right of the central room. 
     From there, each room that offshoots from the central room will make a call to the SpawnTiles() function, which will each begin to spawn rooms randomly. 
     */
@@ -54,38 +49,22 @@ public class SCR_TileSpawner : MonoBehaviour
         for (int i = 0; i < 4; i++)//Cycle through till all four rooms are instantiated, top, bottom, left and right
         {
             if (i == 0)//This will spawn a room with a top opening, thus it must spawn below our central room
-            {
-                GameObject spawnedRoom = Instantiate(roomContainer.allRooms[i].someRooms[theRandType]);//Creates the room.
-                spawnedRoom.transform.position = startRoom.transform.position;//Initializes the position to be the room that spawned it
-                spawnedRoom.transform.localPosition = new Vector3(spawnedRoom.transform.localPosition.x, spawnedRoom.transform.localPosition.y - 10f, 0f);//Moves the room appropriately
-                alreadySpawned.Add(spawnedRoom.transform.position);//This is the container that holds the locations of rooms
-                SpawnTiles(spawnedRoom, spawnedRoom.GetComponent<SCR_Room>().possibleSpawns);//Begin spawning offshoot rooms
-            }
+            { StartSpawningTiles(i, new Vector3(startRoom.transform.localPosition.x, startRoom.transform.localPosition.y - 10f, 0f)); }
             if (i == 1)
-            {
-                GameObject spawnedRoom = Instantiate(roomContainer.allRooms[i].someRooms[theRandType]);//Creates the room.
-                spawnedRoom.transform.position = startRoom.transform.position;//Initializes the position to be the room that spawned it
-                spawnedRoom.transform.localPosition = new Vector3(spawnedRoom.transform.localPosition.x, spawnedRoom.transform.localPosition.y + 10f, 0f);//Moves the room appropriately
-                alreadySpawned.Add(spawnedRoom.transform.position);//This is the container that holds the locations of rooms
-                SpawnTiles(spawnedRoom, spawnedRoom.GetComponent<SCR_Room>().possibleSpawns);//Begin spawning offshoot rooms
-            }
+            { StartSpawningTiles(i, new Vector3(startRoom.transform.localPosition.x, startRoom.transform.localPosition.y + 10f, 0f)); }
             if (i == 2)
-            {
-                GameObject spawnedRoom = Instantiate(roomContainer.allRooms[i].someRooms[theRandType]);//Creates the room.
-                spawnedRoom.transform.position = startRoom.transform.position;//Initializes the position to be the room that spawned it
-                spawnedRoom.transform.localPosition = new Vector3(spawnedRoom.transform.localPosition.x + 16f, spawnedRoom.transform.localPosition.y, 0f);//Moves the room appropriately
-                alreadySpawned.Add(spawnedRoom.transform.position);//This is the container that holds the locations of rooms
-                SpawnTiles(spawnedRoom, spawnedRoom.GetComponent<SCR_Room>().possibleSpawns);//Begin spawning offshoot rooms
-            }
+            { StartSpawningTiles(i, new Vector3(startRoom.transform.localPosition.x + 16f, startRoom.transform.localPosition.y, 0f)); }
             if (i == 3)
-            {
-                GameObject spawnedRoom = Instantiate(roomContainer.allRooms[i].someRooms[theRandType]);//Creates the room.
-                spawnedRoom.transform.position = startRoom.transform.position;//Initializes the position to be the room that spawned it
-                spawnedRoom.transform.localPosition = new Vector3(spawnedRoom.transform.localPosition.x - 16f, spawnedRoom.transform.localPosition.y, 0f);//Moves the room appropriately
-                alreadySpawned.Add(spawnedRoom.transform.position);//This is the container that holds the locations of rooms
-                SpawnTiles(spawnedRoom, spawnedRoom.GetComponent<SCR_Room>().possibleSpawns);//Begin spawning offshoot rooms
-            }
+            { StartSpawningTiles(i, new Vector3(startRoom.transform.localPosition.x + 16f, startRoom.transform.localPosition.y, 0f)); }
         }
+    }
+    private void StartSpawningTiles(int sideRooms, Vector3 offset)
+    {
+        GameObject spawnedRoom = Instantiate(roomContainer.allRooms[sideRooms].someRooms[theRandType]);//Creates the room.
+        spawnedRoom.transform.position = startRoom.transform.position;//Initializes the position to be the room that spawned it
+        spawnedRoom.transform.localPosition = offset;//Moves the room appropriately
+        alreadySpawned.Add(spawnedRoom.transform.position);//This is the container that holds the locations of rooms
+        SpawnTiles(spawnedRoom, spawnedRoom.GetComponent<SCR_Room>().possibleSpawns);//Begin spawning offshoot rooms
     }
     /*
     Author - Johnathan Bates
@@ -115,16 +94,10 @@ public class SCR_TileSpawner : MonoBehaviour
                 else if (theRandRoom == 3 && lastSpawned.GetComponent<SCR_Room>().hasLeft == true)//has to spawn beneath our current room
                 { MakeRoom(lastSpawned, spawnedRoom, possibleSpawns, new Vector3(lastSpawned.transform.localPosition.x - 16f, lastSpawned.transform.localPosition.y, 0f)); }
                 maxRooms--;
-                Debug.Log(maxRooms);
             }
             else if(maxRooms <= 0)
-            {
-                return;
-            }
-            /*else
-            {
-                possibleSpawns = possibleSpawns - 1;
-            }*/
+            { return; }
+            /*else{possibleSpawns = possibleSpawns - 1;}*/
         }
     }
     private void MakeRoom(GameObject lastSpawned, GameObject spawnedRoom, int possibleSpawns, Vector3 offset)
@@ -140,6 +113,7 @@ public class SCR_TileSpawner : MonoBehaviour
         }
         if (lastSpawned.GetComponent<SCR_Room>().possibleSpawns > 0)
         { lastSpawned.GetComponent<SCR_Room>().possibleSpawns = lastSpawned.GetComponent<SCR_Room>().possibleSpawns - 1; }
+        newRoom.GetComponent<SCR_Room>().possibleSpawns = newRoom.GetComponent<SCR_Room>().possibleSpawns - 1;
         SpawnTiles(newRoom, newRoom.GetComponent<SCR_Room>().possibleSpawns);
     }
 }

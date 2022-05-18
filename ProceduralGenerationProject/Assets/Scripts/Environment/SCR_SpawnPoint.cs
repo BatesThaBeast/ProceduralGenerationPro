@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SCR_SavePoint : MonoBehaviour
+public class SCR_SpawnPoint : MonoBehaviour
 {
+   
     private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.CompareTag("SpawnPoint"))
