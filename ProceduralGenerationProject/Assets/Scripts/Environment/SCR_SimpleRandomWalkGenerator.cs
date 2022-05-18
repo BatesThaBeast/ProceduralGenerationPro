@@ -8,18 +8,18 @@ using Random = UnityEngine.Random;
 public class SCR_SimpleRandomWalkGenerator : SCR_AbstractDungeonGenerator
 {
     [SerializeField]
-    private SCR_SimpleRandomWalkSO randomWalkParameters;
+    protected SCR_SimpleRandomWalkSO randomWalkParameters;
     protected override void RunProceduralGeneration()
     {
-        HashSet<Vector2Int> floorPositions = RundRandomWalk(randomWalkParameters);
+        HashSet<Vector2Int> floorPositions = RundRandomWalk(randomWalkParameters, startPosition);
         tilemapVisualizer.Clear();
         tilemapVisualizer.PaintFloorTiles(floorPositions);
         SCR_WallGenerator.CreateWalls(floorPositions, tilemapVisualizer);
     }
 
-    protected HashSet<Vector2Int> RundRandomWalk(SCR_SimpleRandomWalkSO parameters)
+    protected HashSet<Vector2Int> RundRandomWalk(SCR_SimpleRandomWalkSO parameters, Vector2Int position)
     {
-        var currentPosition = startPosition;
+        var currentPosition = position;
         HashSet<Vector2Int> floorPositions = new HashSet<Vector2Int>();
         for (int i = 0; i < parameters.iterations; i++)
         {
