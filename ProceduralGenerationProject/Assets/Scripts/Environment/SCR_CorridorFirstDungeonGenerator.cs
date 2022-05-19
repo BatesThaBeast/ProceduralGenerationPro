@@ -9,7 +9,8 @@ public class SCR_CorridorFirstDungeonGenerator : SCR_SimpleRandomWalkGenerator
     private int corridorLength = 14, corridorCount = 5;
     [SerializeField]
     [Range(0.1f,1)]
-    private float roomPercent;
+    private float roomPercent = 0.8f;
+
     protected override void RunProceduralGeneration()
     {
         CorridorFirstGeneration();
@@ -19,6 +20,7 @@ public class SCR_CorridorFirstDungeonGenerator : SCR_SimpleRandomWalkGenerator
     {
         HashSet<Vector2Int> floorPositions = new HashSet<Vector2Int>();
         HashSet<Vector2Int> potentialRoomPositions = new HashSet<Vector2Int>();
+
         CreateCorridors(floorPositions, potentialRoomPositions);
 
         HashSet<Vector2Int> roomPositions = CreateRooms(potentialRoomPositions);
@@ -31,6 +33,7 @@ public class SCR_CorridorFirstDungeonGenerator : SCR_SimpleRandomWalkGenerator
 
         tilemapVisualizer.PaintFloorTiles(floorPositions);
         SCR_WallGenerator.CreateWalls(floorPositions, tilemapVisualizer);
+
     }
 
     private void CreateRoomsAtDeadEnd(List<Vector2Int> deadEnds, HashSet<Vector2Int> roomFloors)
@@ -39,7 +42,7 @@ public class SCR_CorridorFirstDungeonGenerator : SCR_SimpleRandomWalkGenerator
         {
             if(roomFloors.Contains(position) == false)
             {
-                var room = RundRandomWalk(randomWalkParameters, position);
+                var room = RunRandomWalk(randomWalkParameters, position);
                 roomFloors.UnionWith(room);
             }
         }
@@ -50,14 +53,14 @@ public class SCR_CorridorFirstDungeonGenerator : SCR_SimpleRandomWalkGenerator
         List<Vector2Int> deadEnds = new List<Vector2Int>();
         foreach (var position in floorPositions)
         {
-            int neighborsCount = 0;
+            int neighboursCount = 0;
             foreach (var direction in Direction2D.cardinalDirectionsList)
             {
                 if (floorPositions.Contains(position + direction))
-                    neighborsCount++;
+                    neighboursCount++;
                 
             }
-            if (neighborsCount == 1)
+            if (neighboursCount == 1)
                 deadEnds.Add(position);
         }
         return deadEnds;
@@ -72,17 +75,17 @@ public class SCR_CorridorFirstDungeonGenerator : SCR_SimpleRandomWalkGenerator
 
         foreach (var roomPosition in roomsToCreate)
         {
-            var roomFloor = RundRandomWalk(randomWalkParameters, roomPosition);
+            var roomFloor = RunRandomWalk(randomWalkParameters, roomPosition);
             roomPositions.UnionWith(roomFloor);
         }
         return roomPositions;
-        
     }
 
     private void CreateCorridors(HashSet<Vector2Int> floorPositions, HashSet<Vector2Int> potentialRoomPositions)
     {
         var currentPosition = startPosition;
         potentialRoomPositions.Add(currentPosition);
+
         for (int i = 0; i < corridorCount; i++)
         {
             var corridor = SCR_ProcGen.RandomWalkCorridor(currentPosition, corridorLength);
